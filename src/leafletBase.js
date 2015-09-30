@@ -15,11 +15,10 @@ dc_leaflet.leafletBase = function(_chart) {
         // append sub-div if not there, to allow client to put stuff (reset link etc.)
         // in main div. might also use relative positioning here, for now assume
         // appending will put in right position
-        var child_div = root.selectAll('div.dc-leaflet')
-                .data([0]).enter()
-                .append('div').attr('class', 'dc-leaflet')
-                .style('width', _chart.effectiveWidth())
-                .style('height', _chart.effectiveHeight());
+        var child_div = root.append('div')
+            .attr('class', 'dc-leaflet')
+            .style('width', _chart.effectiveWidth() + "px")
+            .style('height', _chart.effectiveHeight() + "px");
 
         return L.map(child_div.node(),_mapOptions);
     };
