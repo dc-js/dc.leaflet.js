@@ -49,6 +49,25 @@ dc_leaflet.leafletBase = function(_chart) {
         return L.map(child_div.node(),_mapOptions);
     };
 
+    //--------------------------------------------------------------------------------------- 
+    // Adapted from http://leafletjs.com/examples/choropleth.html
+    //--------------------------------------------------------------------------------------- 
+    var _info = L.control();
+
+    _info.onAdd = function (map) {      
+        this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+        this.update();      
+        return this._div;
+    };
+
+    // method that we will use to update the control based on feature properties passed
+    _info.update = function (properties) {        
+        this._div.innerHTML = (properties ? '<b>' + properties.key 
+                            + '</b><br />' + properties.value : 'Hover over a map region');
+    };
+        
+    //----------------------------------------------------------------------------------------
+
     var _tiles=function(map) {
         L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -74,10 +93,18 @@ dc_leaflet.leafletBase = function(_chart) {
 
         _chart.tiles()(_map);
 
+        _chart.info().addTo(_map);
+
         _chart._postRender();
 
         return _chart._doRedraw();
     };
+
+    _chart.info = function(_) {
+        if (!arguments.length) return _info;
+        _info = _;
+        return _chart;
+    }
 
     _chart._postRender = function() {
         //abstract
@@ -533,6 +560,40 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
             layer.key=v.d.key;
             if (_chart.renderPopup())
                 layer.bindPopup(_chart.popup()(v.d,feature));
+
+                //Define mouse events        
+                layer.on({
+                  "mouseover": function (e) {
+                    //gis.stackexchange.com/questions/31951/how-to-show-a-popup-on-mouse-over-not-on-click
+                    //this.openPopup(); //built-in leaflet popup window
+
+                    //Custom Control with Leaflet
+                    //http://leafletjs.com/examples/choropleth.html
+                    //highlight region borders
+                    var layer = e.target;
+
+                    layer.setStyle({
+                        weight: 3,
+                        color: "#422703",
+                        //dashArray: '',
+                        //fillOpacity: 0.7 //changes colour upon hover
+                    });
+
+                    if (!L.Browser.ie && !L.Browser.opera) {
+                      layer.bringToFront();
+                    }
+
+                    //apply border highlight
+                    _chart.info().update(v.d);
+                  },
+
+                  //reset borders on mouseout
+                  "mouseout": function (e) {          
+                    _geojsonLayer.resetStyle(e.target);
+                  }
+                });
+
+
             if (_chart.brushOn())
                 layer.on("click",selectFilter);
         }
