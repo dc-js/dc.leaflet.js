@@ -357,5 +357,6 @@ module.exports.jsFiles = [
     'src/legend.js',
     'src/markerChart.js',
     'src/choroplethChart.js',
+    'src/bubbleChart.js',
     'src/footer.js'  // NOTE: keep this last
 ];

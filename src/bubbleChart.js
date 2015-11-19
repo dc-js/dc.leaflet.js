@@ -1,14 +1,11 @@
-/***************************
- LeafletBubbleChart
- ***************************/
-dc.leafletBubbleChart = function (parent, chartGroup) {
+dc_leaflet.bubbleChart = function (parent, chartGroup) {
     "use strict";
 
     /* ####################################
      * Private variables -- default values.
      * ####################################
      */
-    var _chart = dc.leafletChart({});
+    var _chart = dc_leaflet.leafletBase({});
     var _selectedMarkerList = [];
     var _selectedColor = 'blue';
     var _unselectedColor = 'gray';
@@ -54,12 +51,12 @@ dc.leafletBubbleChart = function (parent, chartGroup) {
     /* ################
      * Public interface
      * ################
-    */
+     */
 
 
     /**
      #### .r([bubbleRadiusScale])
-     Get or set bubble radius scale. By default bubble chart uses ```d3.scale.linear().domain([0, 100])``` as it's r scale .
+     Get or set bubble radius scale. By default bubble chart uses ```d3.scale.linear().domain([0, 100])``` as its r scale .
 
      **/
     _chart.r = function (_) {
@@ -161,7 +158,7 @@ dc.leafletBubbleChart = function (parent, chartGroup) {
             var marker = null;
 
             marker = createmarker(v, key);
-            _layerGroup.addLayer(marker)
+            _layerGroup.addLayer(marker);
         });
     };
 
@@ -207,7 +204,7 @@ dc.leafletBubbleChart = function (parent, chartGroup) {
             }
         }
         else {
-            // If ctrl key wasnt pressed, clear filter and selection and add target to a empty selectedMarkersList.
+            // If ctrl key wasn't pressed, clear filter and selection and add target to a empty selectedMarkersList.
             while (_selectedMarkerList.length > 0) {
                 _selectedMarkerList.pop();
             }
@@ -228,4 +225,3 @@ dc.leafletBubbleChart = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
-
