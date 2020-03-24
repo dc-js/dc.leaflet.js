@@ -1,3 +1,6 @@
+## 0.5.0
+ * Compatible with dc.js 4.* (but not refactored as ES6 classes yet)
+
 ## 0.4.0
  * Compatible with D3v5 and dc.js 3.*
 
@@ -16,3 +19,7 @@
 
 ## Starting dc.leaflet.js changelog
  * Ask Git what happened in the past!
+
+The repo [github.com/dc.js/dc.leaflet.js](https://github.com/dc-js/dc.leaflet.js) is a fork of
+[yurukov/dc.leaflet.js](https://github.com/yurukov/dc.leaflet.js), by Boyan Yurukov, with
+contributions by the community.
