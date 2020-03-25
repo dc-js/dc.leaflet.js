@@ -2,9 +2,6 @@
   fill-opacity: 0.5;
   stroke-opacity: 0.5; }
 
-div.dc-chart {
-  float: left; }
-
 .dc-chart rect.bar {
   stroke: none;
   cursor: pointer; }
@@ -51,7 +48,6 @@ div.dc-chart {
 .dc-chart .grid-line, .dc-chart .axis .grid-line, .dc-chart .grid-line line, .dc-chart .axis .grid-line line {
   fill: none;
   stroke: #ccc;
-  opacity: .5;
   shape-rendering: crispEdges; }
 
 .dc-chart .brush rect.selection {
@@ -207,6 +203,8 @@ div.dc-chart {
   font-size: 11px; }
   .dc-legend .dc-legend-item {
     cursor: pointer; }
+  .dc-legend g.dc-legend-item.selected {
+    fill: blue; }
 
 .dc-hard .number-display {
   float: none; }
