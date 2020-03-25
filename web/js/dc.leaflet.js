@@ -1,5 +1,5 @@
 /*!
- *  dc.leaflet 0.4.0
+ *  dc.leaflet 0.5.0
  *  http://dc-js.github.io/dc.leaflet.js/
  *  Copyright 2014-2015 Boyan Yurukov and the dc.leaflet Developers
  *  https://github.com/dc-js/dc.leaflet.js/blob/master/AUTHORS
@@ -20,11 +20,11 @@
 'use strict';
 
 var dc_leaflet = {
-    version: '0.4.0'
+    version: '0.5.0'
 };
 
-dc_leaflet.leafletBase = function(_chart) {
-    _chart = dc.marginMixin(dc.baseChart(_chart));
+dc_leaflet.leafletBase = function(Base) {
+    var _chart = new Base();
 
     _chart.margins({left:0, top:0, right:0, bottom:0});
 
@@ -136,7 +136,8 @@ dc_leaflet.leafletBase = function(_chart) {
     };
 
     // combine Leaflet events into d3 & dc events
-    dc.override(_chart, 'on', function(event, callback) {
+    const super_on = _chart.on;
+    _chart.on = function(event, callback) {
         var leaflet_events = ['zoomend', 'moveend'];
         if(leaflet_events.indexOf(event) >= 0) {
             if(_map) {
@@ -147,8 +148,8 @@ dc_leaflet.leafletBase = function(_chart) {
             }
             return this;
         }
-        else return _chart._on(event, callback);
-    });
+        else return super_on.call(this, event, callback);
+    };
 
     return _chart;
 };
@@ -247,7 +248,7 @@ dc_leaflet.legend = function() {
 };
 
 dc_leaflet.markerChart = function(parent, chartGroup) {
-    var _chart = dc_leaflet.leafletBase({});
+    var _chart = dc_leaflet.leafletBase(dc.MarginMixin);
 
     var _renderPopup = true;
     var _cluster = false; // requires leaflet.markerCluster
@@ -513,7 +514,7 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
 };
 
 dc_leaflet.choroplethChart = function(parent, chartGroup) {
-    var _chart = dc.colorChart(dc_leaflet.leafletBase({}));
+    var _chart = dc_leaflet.leafletBase(dc.ColorMixin(dc.MarginMixin));
 
     var _geojsonLayer = false;
     var _dataMap = [];
@@ -562,15 +563,16 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
         _chart.map().addLayer(_geojsonLayer);
     };
 
-    dc.override(_chart, '_doRedraw', function() {
+    const super_doRedraw = _chart._doRedraw;
+    _chart._doRedraw = function() {
         _geojsonLayer.clearLayers();
         _dataMap=[];
         _chart._computeOrderedGroups(_chart.data()).forEach(function (d, i) {
             _dataMap[_chart.keyAccessor()(d)] = {'d':d, 'i':i};
         });
         _geojsonLayer.addData(_chart.geojson());
-        return _chart.__doRedraw();
-    });
+        return super_doRedraw.call(this);
+    };
 
     _chart.geojson = function(_) {
         if (!arguments.length) {
@@ -660,7 +662,7 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
      * Private variables -- default values.
      * ####################################
      */
-    var _chart = dc_leaflet.leafletBase({});
+    var _chart = dc_leaflet.leafletBase(dc.MarginMixin);
     var _selectedColor = 'blue';
     var _unselectedColor = 'gray';
     var _layerGroup = false;

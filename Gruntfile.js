@@ -41,30 +41,6 @@ module.exports = function (grunt) {
                 dest: '<%= conf.pkg.name %>.min.js'
             }
         },
-        jscs: {
-            old: {
-                src: ['<%= conf.spec %>/**/*.js'],
-                options: {
-                    validateIndentation: 4
-                }
-            },
-            source: {
-                src: ['<%= conf.src %>/**/*.js', '!<%= conf.src %>/{banner,footer}.js', 'Gruntfile.js',
-                      'grunt/*.js', '<%= conf.web %>/stock.js'],
-                options: {
-                    config: '.jscsrc'
-                }
-            }
-        },
-        jshint: {
-            source: {
-                src: ['<%= conf.src %>/**/*.js', 'Gruntfile.js', 'grunt/*.js', '<%= conf.web %>/stock.js'],
-                options: {
-                    jshintrc: '.jshintrc',
-                    ignores: ['<%= conf.src %>/banner.js', '<%= conf.src %>/footer.js']
-                }
-            }
-        },
         watch: {
             scripts: {
                 files: ['<%= conf.src %>/**/*.js'],
@@ -93,25 +69,6 @@ module.exports = function (grunt) {
                 }
             }
         },
-        emu: {
-            api: {
-                src: '<%= conf.pkg.name %>.js',
-                dest: '<%= conf.web %>/docs/api-latest.md'
-            }
-        },
-        toc: {
-            api: {
-                src: '<%= emu.api.dest %>',
-                dest: '<%= emu.api.dest %>'
-            }
-        },
-        markdown: {
-            html: {
-                src: '<%= emu.api.dest %>',
-                dest: '<%= conf.web %>/docs/index.html'
-            },
-            options: {markdownOptions: {highlight: 'manual'}}
-        },
         copy: {
             'dc-to-gh': {
                 files: [
@@ -124,7 +81,7 @@ module.exports = function (grunt) {
                             'node_modules/leaflet/dist/leaflet.css',
                             'node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css',
                             'node_modules/leaflet.markercluster/dist/MarkerCluster.css',
-                            'node_modules/dc/dc.css'
+                            'node_modules/dc/dist/style/dc.css'
                         ],
                         dest: '<%= conf.web %>/css/'
                     },
@@ -138,7 +95,7 @@ module.exports = function (grunt) {
                             '<%= conf.pkg.name %>.min.js',
                             '<%= conf.pkg.name %>.min.js.map',
                             'node_modules/d3/dist/d3.js',
-                            'node_modules/dc/dc.js',
+                            'node_modules/dc/dist/dc.js',
                             'node_modules/leaflet/dist/leaflet.js',
                             'node_modules/leaflet/dist/leaflet-src.js',
                             'node_modules/leaflet.markercluster/dist/leaflet.markercluster.js',
@@ -192,17 +149,6 @@ module.exports = function (grunt) {
                 command: 'cp -n scripts/pre-commit.sh .git/hooks/pre-commit' +
                     ' || echo \'Cowardly refusing to overwrite your existing git pre-commit hook.\''
             }
-        },
-        browserify: {
-            dev: {
-                src: '<%= conf.pkg.name %>.js',
-                dest: 'bundle.js',
-                options: {
-                    browserifyOptions: {
-                        standalone: 'dc'
-                    }
-                }
-            }
         }
     });
 
@@ -245,15 +191,9 @@ module.exports = function (grunt) {
 
     // task aliases
     grunt.registerTask('build', ['concat', 'uglify']);
-    grunt.registerTask('docs', ['build', 'copy', 'emu', 'toc', 'markdown']);
+    grunt.registerTask('docs', ['build', 'copy']);
     grunt.registerTask('web', ['docs', 'gh-pages']);
     grunt.registerTask('server', ['docs', 'connect:server', 'watch:scripts']);
-    grunt.registerTask('test', ['build', 'jasmine:specs', 'shell:hooks']);
-    grunt.registerTask('test-browserify', ['build', 'browserify', 'jasmine:browserify']);
-    grunt.registerTask('coverage', ['build', 'jasmine:coverage']);
-    grunt.registerTask('ci', ['test', 'jasmine:specs:build', 'connect:server', 'saucelabs-jasmine']);
-    grunt.registerTask('ci-pull', ['test', 'jasmine:specs:build', 'connect:server']);
-    grunt.registerTask('lint', ['build', 'jshint', 'jscs']);
     grunt.registerTask('default', ['build']);
 };
 

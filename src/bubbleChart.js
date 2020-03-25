@@ -5,7 +5,7 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
      * Private variables -- default values.
      * ####################################
      */
-    var _chart = dc_leaflet.leafletBase({});
+    var _chart = dc_leaflet.leafletBase(dc.MarginMixin);
     var _selectedColor = 'blue';
     var _unselectedColor = 'gray';
     var _layerGroup = false;
