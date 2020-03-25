@@ -1,5 +1,5 @@
-dc_leaflet.leafletBase = function(_chart) {
-    _chart = dc.marginMixin(dc.baseChart(_chart));
+dc_leaflet.leafletBase = function(Base) {
+    var _chart = new Base();
 
     _chart.margins({left:0, top:0, right:0, bottom:0});
 
@@ -111,7 +111,8 @@ dc_leaflet.leafletBase = function(_chart) {
     };
 
     // combine Leaflet events into d3 & dc events
-    dc.override(_chart, 'on', function(event, callback) {
+    const super_on = _chart.on;
+    _chart.on = function(event, callback) {
         var leaflet_events = ['zoomend', 'moveend'];
         if(leaflet_events.indexOf(event) >= 0) {
             if(_map) {
@@ -122,8 +123,8 @@ dc_leaflet.leafletBase = function(_chart) {
             }
             return this;
         }
-        else return _chart._on(event, callback);
-    });
+        else return super_on.call(this, event, callback);
+    };
 
     return _chart;
 };

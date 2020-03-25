@@ -1,5 +1,5 @@
 dc_leaflet.markerChart = function(parent, chartGroup) {
-    var _chart = dc_leaflet.leafletBase({});
+    var _chart = dc_leaflet.leafletBase(dc.MarginMixin);
 
     var _renderPopup = true;
     var _cluster = false; // requires leaflet.markerCluster

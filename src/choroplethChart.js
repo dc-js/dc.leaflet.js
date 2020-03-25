@@ -1,5 +1,5 @@
 dc_leaflet.choroplethChart = function(parent, chartGroup) {
-    var _chart = dc.colorChart(dc_leaflet.leafletBase({}));
+    var _chart = dc_leaflet.leafletBase(dc.ColorMixin(dc.MarginMixin));
 
     var _geojsonLayer = false;
     var _dataMap = [];
@@ -48,15 +48,16 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
         _chart.map().addLayer(_geojsonLayer);
     };
 
-    dc.override(_chart, '_doRedraw', function() {
+    const super_doRedraw = _chart._doRedraw;
+    _chart._doRedraw = function() {
         _geojsonLayer.clearLayers();
         _dataMap=[];
         _chart._computeOrderedGroups(_chart.data()).forEach(function (d, i) {
             _dataMap[_chart.keyAccessor()(d)] = {'d':d, 'i':i};
         });
         _geojsonLayer.addData(_chart.geojson());
-        return _chart.__doRedraw();
-    });
+        return super_doRedraw.call(this);
+    };
 
     _chart.geojson = function(_) {
         if (!arguments.length) {
