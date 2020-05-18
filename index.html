@@ -156,7 +156,8 @@
           .height(400)
           .center([42.69,25.42])
           .zoom(7)
-          .renderPopup(false)
+          .renderPopup(true)
+          .popupMod('ctrlCmd')
           .filterByArea(true)
           .icon(function(d) {
               var iconUrl;
@@ -253,6 +254,7 @@
           .featureKeyAccessor(function(feature) {
               return feature.properties.code;
           })
+          .popupMod('ctrlCmd')
           .renderPopup(true)
           .popup(function(d,feature) {
               return feature.properties.nameEn+" : "+d.value;
