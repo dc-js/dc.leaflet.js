@@ -120,7 +120,7 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
         if (v && v.d) {
             layer.key=v.d.key;
             if (_chart.renderPopup())
-                layer.bindPopup(_chart.popup()(v.d, feature));
+                _chart.bindPopupWithMod(layer, _chart.popup()(v.d, feature));
             if (_chart.brushOn())
                 layer.on("click", selectFilter);
         }
@@ -130,6 +130,8 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
         if (!e.target) {
             return;
         }
+        if (!_chart.modKeyMatches(e, _chart.filterMod()))
+            return;
         var filter = e.target.key;
         dc.events.trigger(function () {
             _chart.filter(filter);

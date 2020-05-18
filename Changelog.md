@@ -1,3 +1,6 @@
+## 0.5.1
+ * `popupMod` and `filterMod` optionally restrict popup and filter actions to when a modifier key is pressed
+
 ## 0.5.0
  * Compatible with dc.js 4.* (but not refactored as ES6 classes yet)
 

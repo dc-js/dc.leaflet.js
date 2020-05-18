@@ -9,6 +9,9 @@ dc_leaflet.leafletBase = function(Base) {
     var _defaultCenter=false;
     var _defaultZoom=false;
 
+    var _popupMod = null;
+    var _filterMod = null;
+
     var _cachedHandlers = {};
 
     var _createLeaflet = function(root) {
@@ -99,6 +102,45 @@ dc_leaflet.leafletBase = function(Base) {
 
     _chart.map = function() {
         return _map;
+    };
+
+    _chart._isMac = navigator.platform.toUpperCase().includes('MAC');
+
+    _chart._modAssignment = {
+        shift: 'shiftKey',
+        alt: 'altKey',
+        ctrlCmd: _chart._isMac ? 'metaKey' : 'ctrlKey'
+    };
+
+    _chart.popupMod = function(_) {
+        if (!arguments.length)
+            return _popupMod;
+        _popupMod = _;
+        return _chart;
+    };
+
+    _chart.filterMod = function(_) {
+        if (!arguments.length)
+            return _filterMod;
+        _filterMod = _;
+        return _chart;
+    };
+
+    _chart.modKeyMatches = function(e, modKey) {
+        if (modKey)
+            return e.originalEvent[_chart._modAssignment[modKey]];
+        else
+            return !e.originalEvent.shiftKey && !e.originalEvent.altKey &&
+                !e.originalEvent.ctrlKey && !e.originalEvent.metaKey;
+    };
+
+    _chart.bindPopupWithMod = function(layer, value) {
+        layer.bindPopup(value);
+        layer.off('click', layer._openPopup);
+        layer.on('click', function(e) {
+            if (_chart.modKeyMatches(e, _chart.popupMod()))
+                layer._openPopup(e);
+        });
     };
 
     _chart.toLocArray = function(value) {

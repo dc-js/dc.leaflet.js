@@ -187,7 +187,7 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
         var marker = _marker(v, _chart.map());
         marker.key = k;
         if (_chart.renderPopup()) {
-            marker.bindPopup(_chart.popup()(v, marker));
+            _chart.bindPopupWithMod(marker, _chart.popup()(v, marker));
         }
         if (_chart.brushOn() && !_filterByArea) {
             marker.on("click", selectFilter);
@@ -254,6 +254,7 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
 
     var selectFilter = function(e) {
         if (!e.target) return;
+        if (!_chart.modKeyMatches(e, _chart.filterMod())) return;
         var filter = e.target.key;
         dc.events.trigger(function () {
             _chart.filter(filter);
