@@ -1,5 +1,5 @@
 /*!
- *  dc.leaflet 0.5.0
+ *  dc.leaflet 0.5.1
  *  http://dc-js.github.io/dc.leaflet.js/
  *  Copyright 2014-2015 Boyan Yurukov and the dc.leaflet Developers
  *  https://github.com/dc-js/dc.leaflet.js/blob/master/AUTHORS
@@ -20,7 +20,7 @@
 'use strict';
 
 var dc_leaflet = {
-    version: '0.5.0'
+    version: '0.5.1'
 };
 
 dc_leaflet.leafletBase = function(Base) {
@@ -33,6 +33,9 @@ dc_leaflet.leafletBase = function(Base) {
     var _mapOptions=false;
     var _defaultCenter=false;
     var _defaultZoom=false;
+
+    var _popupMod = null;
+    var _filterMod = null;
 
     var _cachedHandlers = {};
 
@@ -124,6 +127,45 @@ dc_leaflet.leafletBase = function(Base) {
 
     _chart.map = function() {
         return _map;
+    };
+
+    _chart._isMac = navigator.platform.toUpperCase().includes('MAC');
+
+    _chart._modAssignment = {
+        shift: 'shiftKey',
+        alt: 'altKey',
+        ctrlCmd: _chart._isMac ? 'metaKey' : 'ctrlKey'
+    };
+
+    _chart.popupMod = function(_) {
+        if (!arguments.length)
+            return _popupMod;
+        _popupMod = _;
+        return _chart;
+    };
+
+    _chart.filterMod = function(_) {
+        if (!arguments.length)
+            return _filterMod;
+        _filterMod = _;
+        return _chart;
+    };
+
+    _chart.modKeyMatches = function(e, modKey) {
+        if (modKey)
+            return e.originalEvent[_chart._modAssignment[modKey]];
+        else
+            return !e.originalEvent.shiftKey && !e.originalEvent.altKey &&
+                !e.originalEvent.ctrlKey && !e.originalEvent.metaKey;
+    };
+
+    _chart.bindPopupWithMod = function(layer, value) {
+        layer.bindPopup(value);
+        layer.off('click', layer._openPopup);
+        layer.on('click', function(e) {
+            if (_chart.modKeyMatches(e, _chart.popupMod()))
+                layer._openPopup(e);
+        });
     };
 
     _chart.toLocArray = function(value) {
@@ -436,7 +478,7 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
         var marker = _marker(v, _chart.map());
         marker.key = k;
         if (_chart.renderPopup()) {
-            marker.bindPopup(_chart.popup()(v, marker));
+            _chart.bindPopupWithMod(marker, _chart.popup()(v, marker));
         }
         if (_chart.brushOn() && !_filterByArea) {
             marker.on("click", selectFilter);
@@ -503,6 +545,7 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
 
     var selectFilter = function(e) {
         if (!e.target) return;
+        if (!_chart.modKeyMatches(e, _chart.filterMod())) return;
         var filter = e.target.key;
         dc.events.trigger(function () {
             _chart.filter(filter);
@@ -635,7 +678,7 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
         if (v && v.d) {
             layer.key=v.d.key;
             if (_chart.renderPopup())
-                layer.bindPopup(_chart.popup()(v.d, feature));
+                _chart.bindPopupWithMod(layer, _chart.popup()(v.d, feature));
             if (_chart.brushOn())
                 layer.on("click", selectFilter);
         }
@@ -645,6 +688,8 @@ dc_leaflet.choroplethChart = function(parent, chartGroup) {
         if (!e.target) {
             return;
         }
+        if (!_chart.modKeyMatches(e, _chart.filterMod()))
+            return;
         var filter = e.target.key;
         dc.events.trigger(function () {
             _chart.filter(filter);

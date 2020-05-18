@@ -31,6 +31,10 @@ dc_leaflet.leafletBase = function(chart)
   .zoom(7)                - get or set initial zoom level
   .map()                  - get map object
   .brushOn(true)          - if the map should select datapoints; Default: true
+  .popupMod('alt')        - only display popup when 'alt' modifier key (or 'shift' or 'ctrlCmd') is pressed;
+                            Default: null, no modifier key
+  .filterMod('ctrlMod')   - only filter when control key (command key on Mac) is pressed
+                            Default: null, no modifier key
 ```
 
 Marker chart
