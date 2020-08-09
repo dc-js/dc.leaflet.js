@@ -4,6 +4,7 @@ dc_leaflet.leafletBase = function(Base) {
     _chart.margins({left:0, top:0, right:0, bottom:0});
 
     var _map;
+    var _reuseMap = false;
 
     var _mapOptions=false;
     var _defaultCenter=false;
@@ -54,6 +55,8 @@ dc_leaflet.leafletBase = function(Base) {
             _chart.tiles()(_map);
             _chart._postRender();
         }
+        else if (_chart.map() && _reuseMap)
+            _chart._postRender();
         else
             console.warn("WARNING: Leaflet map already rendered.");
 
@@ -100,8 +103,13 @@ dc_leaflet.leafletBase = function(Base) {
         return _chart;
     };
 
-    _chart.map = function() {
-        return _map;
+    _chart.map = function(_) {
+        if (!arguments.length) {
+            return _map;
+        }
+        _map = _;
+        _reuseMap = true;
+        return _chart;
     };
 
     _chart._isMac = navigator.platform.toUpperCase().includes('MAC');

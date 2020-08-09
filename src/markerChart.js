@@ -7,6 +7,8 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
     var _rebuildMarkers = false;
     var _brushOn = true;
     var _filterByArea = false;
+    var _clickEvent = false;
+    var _featureGroup = false;
 
     var _filter;
     var _innerFilter=false;
@@ -15,7 +17,10 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
     var _markerList = [];
     var _currentGroups=false;
 
-    _chart.renderTitle(true);
+    var _fitOnRender = true;
+    var _fitOnRedraw = false;
+    var _disableFitOnRedraw = false;
+    var _showMarkerTitle = true;
 
     var _location = function(d) {
         return _chart.keyAccessor()(d);
@@ -23,8 +28,8 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
 
     var _marker = function(d, map) {
         var marker = new L.Marker(_chart.toLocArray(_chart.locationAccessor()(d)), {
-            title: _chart.renderTitle() ? _chart.title()(d) : '',
-            alt: _chart.renderTitle() ? _chart.title()(d) : '',
+            title: _showMarkerTitle ? _chart.title()(d) : '',
+            alt: _showMarkerTitle ? _chart.title()(d) : '',
             icon: _icon(d, map),
             clickable: _chart.renderPopup() || (_chart.brushOn() && !_filterByArea),
             draggable: false
@@ -76,6 +81,7 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
         _layerGroup.clearLayers();
 
         var addList=[];
+        _featureGroup = false;
         groups.forEach(function(v, i) {
             var key = _chart.keyAccessor()(v);
             var marker = null;
@@ -96,6 +102,16 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
         if (_chart.cluster() && addList.length > 0) {
             _layerGroup.addLayers(addList);
         }
+
+        if (addList.length > 0) {
+            if (_fitOnRender || (_fitOnRedraw && !_disableFitOnRedraw)) {
+                _featureGroup = new L.featureGroup(addList);
+                _chart.map().fitBounds(_featureGroup.getBounds());
+            }
+        }
+
+        _disableFitOnRedraw = false;
+        _fitOnRender = false;
     };
 
     _chart.locationAccessor = function(_) {
@@ -114,6 +130,14 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
         return _chart;
     };
 
+    _chart.featureGroup = function(_) {
+        if (!arguments.length) {
+            return _featureGroup;
+        }
+        _featureGroup= _;
+        return _chart;
+    };
+
     _chart.icon = function(_) {
         if (!arguments.length) {
             return _icon;
@@ -127,6 +151,14 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
             return _popup;
         }
         _popup= _;
+        return _chart;
+    };
+
+    _chart.clickEvent = function(_) {
+        if (!arguments.length) {
+            return _clickEvent;
+        }
+        _clickEvent= _;
         return _chart;
     };
 
@@ -179,6 +211,30 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
         return _chart;
     };
 
+    _chart.fitOnRender = function(_) {
+        if (!arguments.length) {
+            return _fitOnRender;
+        }
+        _fitOnRender = _;
+        return _chart;
+    };
+
+    _chart.fitOnRedraw = function(_) {
+        if (!arguments.length) {
+            return _fitOnRedraw;
+        }
+        _fitOnRedraw = _;
+        return _chart;
+    };
+
+    _chart.showMarkerTitle = function(_) {
+        if (!arguments.length) {
+            return _showMarkerTitle;
+        }
+        _showMarkerTitle = _;
+        return _chart;
+    };
+
     _chart.markerGroup = function() {
         return _layerGroup;
     };
@@ -192,6 +248,9 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
         if (_chart.brushOn() && !_filterByArea) {
             marker.on("click", selectFilter);
         }
+        if (_clickEvent)
+            marker.on("click", _clickEvent)
+
         _markerList[k]=marker;
         return marker;
     };
