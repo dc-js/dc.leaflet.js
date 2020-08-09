@@ -89,6 +89,9 @@
 <script type="text/javascript" src="js/dc.leaflet.js"></script>
 <script type="text/javascript">
 
+ var facilitiesGroup = false;
+ var returnObject = false;
+
   /*     Markers      */
 
   d3.tsv("demo1.tsv").then(function(data) {
@@ -109,6 +112,9 @@
           .height(400)
           .center([42.69,25.42])
           .zoom(7)
+          .showMarkerTitle(false)
+          .fitOnRender(true)
+          .fitOnRedraw(true)
           .cluster(true);
 
       var types = xf.dimension(function(d) { return d.type; });
@@ -156,7 +162,6 @@
           .height(400)
           .center([42.69,25.42])
           .zoom(7)
-          .renderPopup(true)
           .popupMod('ctrlCmd')
           .filterByArea(true)
           .icon(function(d) {
@@ -211,7 +216,7 @@
   Promise.all([d3.json("bulgaria.geojson"), d3.csv("demo2.csv")])
     .then(function([demo2_geojson, demo2]) {
         drawChoropleth(demo2,demo2_geojson);
-        drawBubbles(demo2,demo2_geojson);
+        returnObject = drawBubbles(demo2,demo2_geojson);
   });
 
   /*     Choropleth      */
@@ -316,7 +321,7 @@
       var xf = crossfilter(dataP);
       var groupname = "Bubbles";
       var facilities = xf.dimension(function(d) { return d.code; });
-      var facilitiesGroup = facilities.group().reduceSum(function(d) { return d.value;});
+      facilitiesGroup = facilities.group().reduceSum(function(d) { return d.value;});
 
       var choro = dc_leaflet.bubbleChart("#demo4 .map",groupname)
           .dimension(facilities)
@@ -324,9 +329,20 @@
           .width(600)
           .height(400)
           .center([42.69,25.42])
+          .renderPopup(false)
+          .colors(colorbrewer.Reds[7])
+          .colorDomain([
+              d3.min(facilitiesGroup.all(), dc.pluck('value')),
+              d3.mean(facilitiesGroup.all(), dc.pluck('value'))
+          ])
+          .colorAccessor(function(d,i) {
+              return d.value;
+          })
+          .popup(d => d.key)
           .zoom(7)
           .locationAccessor(d => pos[d.key])
-          .r(d3.scaleLog().domain([1, max]).range([0,20]));
+          .r(d3.scaleLog().domain([1, max]).range([0,20]))
+          .legend(dc_leaflet.legend().position('bottomright').legendTitle("Bubble"));
 
       var types = xf.dimension(function(d) { return d.type; });
       var typesGroup = types.group().reduceSum(function(d) { return d.value;});

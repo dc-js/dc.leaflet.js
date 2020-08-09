@@ -3,6 +3,7 @@ dc_leaflet.legend = function() {
     var _parent, _legend = {};
     var _leafletLegend = null;
     var _position = 'bottomleft';
+    var _legendTitle = false;
 
     _legend.parent = function (parent) {
         if(!arguments.length)
@@ -15,10 +16,17 @@ dc_leaflet.legend = function() {
         return L.Control.extend({
             options: {position: _position},
             onAdd: function (map) {
+                if (map.legend)
+                    map.legend.setContent("");
+                else
+                    map.legend = this;
                 this._div = L.DomUtil.create('div', 'info legend');
                 map.on('moveend',this._update,this);
                 this._update();
                 return this._div;
+            },
+            setContent: function () {
+                return this.getContainer().innerHTML;
             },
             _update: function () {
                 if (!_parent.colorDomain)
@@ -40,9 +48,12 @@ dc_leaflet.legend = function() {
                     }
 
                     var div = L.DomUtil.create('div', 'info legend');
+                    if (_legendTitle)
+                        this._div.innerHTML = "<strong>" + _legendTitle + "</strong><br/>";
+                    else
+                        this._div.innerHTML = ""; //reset so that legend is not plotted multiple times
                     // loop through our density intervals and generate a label with a colored
                     // square for each interval
-                    this._div.innerHTML = ""; //reset so that legend is not plotted multiple times
                     for (i = 0; i < grades.length; i++) {
                         this._div.innerHTML +=
                             '<i style="background:' + palette[i] + '"></i> ' +
@@ -57,6 +68,13 @@ dc_leaflet.legend = function() {
         if(!arguments.length)
             return _LegendClass;
         _LegendClass = LegendClass;
+        return _legend;
+    };
+
+    _legend.legendTitle = function(_) {
+        if(!arguments.length)
+            return _legendTitle;
+        _legendTitle = _;
         return _legend;
     };
 
