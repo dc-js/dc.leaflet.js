@@ -55,6 +55,7 @@ dc_leaflet.markerChart(parent, chartGroup)
   .featureGroup()         - get or set featureGroup that will be used for fit on render or redraw
   .clickEvent()           - get or set the event to fire when a marker is clicked
   .fitOnRender()          - get or set a bool to determine whether to fit to bounds when markers are rendered
+  .fitOnRedraw()          - get or set a bool to determine whether to fit to bounds on crossfilter redraw
   .showMarkerTitle()      - get or set a bool to determine whether title and alt should be shown for markers
 ```
 
@@ -79,7 +80,7 @@ dc_leaflet.bubbleChart(parent, chartGroup)
   .r()                    - radius scale, used to convert value returned by valueAccessor(d) to pixels. Default: d3.scale.linear().domain([0, 100])
   .locationAccessor()     - function(d) to access the property indicating the latlng (string or array); Default: use keyAccessor
   .selectedColor()        - get or set the (constant) selected bubble color
-  .unselectedColor()      - get or set the unselected bubble color, which can render from a color domain (like a choropleth can)
+  .unselectedColor()      - get or set the unselected bubble color, which by default passes the datum to dc.ColorMixin's getColor function to dynamically color bubbles (defaults to gray unless .colors(), .colorDomain() and .colorAccessor() are defined)
   .popup()                - function(d, marker) to return the string or DOM content of a popup
   .renderPopup()          - get or set if popups should be shown on mouseover; Default: true
   .layerGroup()           - get the layerGroup for the bubbles
