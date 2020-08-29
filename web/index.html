@@ -45,7 +45,8 @@
   <div id="demo1">
     <h2>Markers with clustering, popups and single selection</h2>
     <i>Renewable energy plants in Bulgaria in 2012</i>
-    <div class="map"></div>
+    <div class="map" id='cluster-map'></div>
+    <div id='cluster-map-anchor'></div>
     <div class="pie"></div>
   </div>
 
@@ -89,6 +90,14 @@
 <script type="text/javascript" src="js/dc.leaflet.js"></script>
 <script type="text/javascript">
 
+var clusterMap = L.map('cluster-map', {
+		center: [42.69,25.42],
+		zoom: 7
+	}); 
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(clusterMap);
+
  var facilitiesGroup = false;
  var returnObject = false;
 
@@ -105,22 +114,21 @@
       var facilities = xf.dimension(function(d) { return d.geo; });
       var facilitiesGroup = facilities.group().reduceCount();
 
-      var marker = dc_leaflet.markerChart("#demo1 .map",groupname)
+      var marker = dc_leaflet.markerChart("#cluster-map-anchor",groupname)
           .dimension(facilities)
           .group(facilitiesGroup)
-          .width(600)
-          .height(400)
-          .center([42.69,25.42])
-          .zoom(7)
+          .map(clusterMap)
           .showMarkerTitle(false)
           .fitOnRender(true)
           .fitOnRedraw(true)
+          .filterByArea(true)
           .cluster(true);
+
 
       var types = xf.dimension(function(d) { return d.type; });
       var typesGroup = types.group().reduceCount();
 
-      var pie = dc.pieChart("#demo1 .pie",groupname)
+      var pie = dc.pieChart("#demo1 .pie", groupname)
           .dimension(types)
           .group(typesGroup)
           .width(200)
@@ -330,6 +338,7 @@
           .height(400)
           .center([42.69,25.42])
           .renderPopup(false)
+          // COMMENT THE FOLLOWING 8 LINES TO GET THE BUBBLE CHART TO SEE HOW DEFAULT RENDERING WORKS
           .colors(colorbrewer.Reds[7])
           .colorDomain([
               d3.min(facilitiesGroup.all(), dc.pluck('value')),
@@ -338,6 +347,8 @@
           .colorAccessor(function(d,i) {
               return d.value;
           })
+          // UNCOMMENT THE FOLLOWING LINE TO OVERRIDE THE DEFAULT UNSELECTED COLOR HDANLER
+          //.unselectedColor(function(d){ choro.linearColors(['pink']); return choro.getColor(d);})
           .popup(d => d.key)
           .zoom(7)
           .locationAccessor(d => pos[d.key])

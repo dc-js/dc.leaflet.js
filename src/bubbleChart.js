@@ -6,12 +6,13 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
      * ####################################
      */
     var _chart = dc_leaflet.leafletBase(dc.ColorMixin(dc.MarginMixin));
+    _chart.linearColors(['gray']);
     var _selectedColor = 'blue';
 
     var _unselectedColor = function(d) {
-        var colorValue = _chart.valueAccessor()(d);
-        return _chart.getColor(d, colorValue);
+        return _chart.getColor(d);
     };
+    
 
     var _renderPopup = true;
     var _layerGroup = false;
