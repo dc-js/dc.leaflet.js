@@ -25,8 +25,8 @@ dc_leaflet.legend = function() {
                 this._update();
                 return this._div;
             },
-            setContent: function () {
-                return this.getContainer().innerHTML;
+            setContent: function (content) {
+                return this.getContainer().innerHTML = content;
             },
             _update: function () {
                 if (!_parent.colorDomain)
