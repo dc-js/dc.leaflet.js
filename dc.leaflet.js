@@ -1,5 +1,5 @@
 /*!
- *  dc.leaflet 0.5.1
+ *  dc.leaflet 0.5.2
  *  http://dc-js.github.io/dc.leaflet.js/
  *  Copyright 2014-2015 Boyan Yurukov and the dc.leaflet Developers
  *  https://github.com/dc-js/dc.leaflet.js/blob/master/AUTHORS
@@ -20,7 +20,7 @@
 'use strict';
 
 var dc_leaflet = {
-    version: '0.5.1'
+    version: '0.5.2'
 };
 
 dc_leaflet.leafletBase = function(Base) {
@@ -203,7 +203,6 @@ dc_leaflet.leafletBase = function(Base) {
 
     return _chart;
 };
-
 //Legend code adapted from http://leafletjs.com/examples/choropleth.html
 dc_leaflet.legend = function() {
     var _parent, _legend = {};
@@ -231,8 +230,8 @@ dc_leaflet.legend = function() {
                 this._update();
                 return this._div;
             },
-            setContent: function () {
-                return this.getContainer().innerHTML;
+            setContent: function (content) {
+                return this.getContainer().innerHTML = content;
             },
             _update: function () {
                 if (!_parent.colorDomain)
@@ -314,7 +313,6 @@ dc_leaflet.legend = function() {
 
     return _legend;
 };
-
 dc_leaflet.markerChart = function(parent, chartGroup) {
     var _chart = dc_leaflet.leafletBase(dc.MarginMixin);
 
@@ -536,6 +534,14 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
         return _chart;
     };
 
+    _chart.fitOnRedraw = function(_) {
+        if (!arguments.length) {
+            return _fitOnRedraw;
+        }
+        _fitOnRedraw = _;
+        return _chart;
+    };
+
     _chart.showMarkerTitle = function(_) {
         if (!arguments.length) {
             return _showMarkerTitle;
@@ -632,7 +638,6 @@ dc_leaflet.markerChart = function(parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
-
 dc_leaflet.choroplethChart = function(parent, chartGroup) {
     var _chart = dc_leaflet.leafletBase(dc.ColorMixin(dc.MarginMixin));
 
@@ -785,12 +790,13 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
      * ####################################
      */
     var _chart = dc_leaflet.leafletBase(dc.ColorMixin(dc.MarginMixin));
+    _chart.linearColors(['gray']);
     var _selectedColor = 'blue';
 
     var _unselectedColor = function(d) {
-        var colorValue = _chart.valueAccessor()(d);
-        return _chart.getColor(d, colorValue);
+        return _chart.getColor(d);
     };
+    
 
     var _renderPopup = true;
     var _layerGroup = false;
@@ -997,7 +1003,6 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
 
     return _chart.anchor(parent, chartGroup);
 };
-
 dc_leaflet.d3 = d3;
 dc_leaflet.crossfilter = crossfilter;
 dc_leaflet.dc = dc;
