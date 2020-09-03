@@ -338,7 +338,6 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           .height(400)
           .center([42.69,25.42])
           .renderPopup(false)
-          // COMMENT THE FOLLOWING 8 LINES TO SEE HOW DEFAULT BUBBLE RENDERING WORKS
           .colors(colorbrewer.Reds[7])
           .colorDomain([
               d3.min(facilitiesGroup.all(), dc.pluck('value')),
@@ -347,8 +346,6 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           .colorAccessor(function(d,i) {
               return d.value;
           })
-          // UNCOMMENT THE FOLLOWING LINE TO OVERRIDE THE DEFAULT UNSELECTED COLOR HANDLER
-          //.unselectedColor(function(d){ choro.linearColors(['pink']); return choro.getColor(d);})
           .popup(d => d.key)
           .zoom(7)
           .locationAccessor(d => pos[d.key])
