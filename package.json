@@ -1,6 +1,6 @@
 {
     "name": "dc.leaflet",
-    "version": "0.5.1",
+    "version": "0.5.2",
     "license": "Apache-2.0",
     "copyright": "2020",
     "description": "Leaflet maps integrated with crossfilter and dc.js",
