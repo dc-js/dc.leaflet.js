@@ -5,13 +5,24 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
      * Private variables -- default values.
      * ####################################
      */
-    var _chart = dc_leaflet.leafletBase(dc.MarginMixin);
+    var _chart = dc_leaflet.leafletBase(dc.ColorMixin(dc.MarginMixin));
+    _chart.linearColors(['gray']);
     var _selectedColor = 'blue';
-    var _unselectedColor = 'gray';
+
+    var _unselectedColor = function(d) {
+        return _chart.getColor(d);
+    };
+    
+
+    var _renderPopup = true;
     var _layerGroup = false;
 
     var _location = function (d) {
         return _chart.keyAccessor()(d);
+    };
+
+    var _popup = function(d, feature) {
+        return _chart.title()(d);
     };
 
     var _r = d3.scaleLinear().domain([0, 100]);
@@ -26,13 +37,16 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
 
         circle.setRadius(_chart.r()(_chart.valueAccessor()(d)));
         circle.on("mouseover", function (e) {
-            // TODO - Tooltips!
-            //console.log(_chart.title()(d));
+            if (_chart.renderPopup) this.openPopup();
         });
+        circle.on("mouseout", function (e) {
+            if (_chart.renderPopup) this.closePopup();
+        });
+
         var key = _chart.keyAccessor()(d);
         var isSelected = (-1 !== _chart.filters().indexOf(key));
 
-        circle.options.color = isSelected ? _chart.selectedColor() : _chart.unselectedColor();
+        circle.options.color = isSelected ? _chart.selectedColor() : _chart.unselectedColor()(d);
 
         return circle;
     };
@@ -99,9 +113,32 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
         return _chart;
     };
 
+    _chart.popup = function(_) {
+        if (!arguments.length) {
+            return _popup;
+        }
+        _popup= _;
+        return _chart;
+    };
+
+    _chart.layerGroup = function() {
+        return _layerGroup;
+    };
+
+    _chart.renderPopup = function(_) {
+        if (!arguments.length) {
+            return _renderPopup;
+        }
+        _renderPopup = _;
+        return _chart;
+    };
+
     var createmarker = function (v, k) {
         var marker = _chart.marker()(v, _chart.map());
         marker.key = k;
+        if (_chart.renderPopup()) {
+            _chart.bindPopupWithMod(marker, _chart.popup()(v, marker));
+        }
         if (_chart.brushOn()) {
             marker.on("click", selectFilter);
         }
@@ -162,6 +199,10 @@ dc_leaflet.bubbleChart = function (parent, chartGroup) {
     }
 
     var selectFilter = function (e) {
+        if (!e.target) {
+            return;
+        }
+        var filter = e.target.key;
         L.DomEvent.stopPropagation(e);
         var filter = e.target.key;
         if (e.originalEvent.ctrlKey || e.originalEvent.metaKey) {

@@ -29,7 +29,7 @@ dc_leaflet.leafletBase = function(chart)
   .mapOptions({..})       - set leaflet specific options to the map object; Default: Leaflet default options
   .center([1.1,1.1])      - get or set initial location
   .zoom(7)                - get or set initial zoom level
-  .map()                  - get map object
+  .map()                  - set or get map object
   .brushOn(true)          - if the map should select datapoints; Default: true
   .popupMod('alt')        - only display popup when 'alt' modifier key (or 'shift' or 'ctrlCmd') is pressed;
                             Default: null, no modifier key
@@ -52,6 +52,11 @@ dc_leaflet.markerChart(parent, chartGroup)
   .rebuildMarkers(false)  - set if all markers should be rebuild each time the map is redrawn. Degrades performance; Default: false
   .filterByArea(false)    - if the map should filter data based on the markers inside the zoomed in area instead of the user clicking on individual markers; Default: false
   .markerGroup()          - get the Leaflet group object containing all shown markers (regular group or cluster)
+  .featureGroup()         - get or set featureGroup that will be used for fit on render or redraw
+  .clickEvent()           - get or set the event to fire when a marker is clicked
+  .fitOnRender()          - get or set a bool to determine whether to fit to bounds when markers are rendered
+  .fitOnRedraw()          - get or set a bool to determine whether to fit to bounds on crossfilter redraw
+  .showMarkerTitle()      - get or set a bool to determine whether title and alt should be shown for markers
 ```
 
 Choropleth chart
@@ -75,6 +80,9 @@ dc_leaflet.bubbleChart(parent, chartGroup)
   .r()                    - radius scale, used to convert value returned by valueAccessor(d) to pixels. Default: d3.scale.linear().domain([0, 100])
   .locationAccessor()     - function(d) to access the property indicating the latlng (string or array); Default: use keyAccessor
   .selectedColor()        - get or set the (constant) selected bubble color
-  .unselectedColor()      - get or set the (constant) unselected bubble color
+  .unselectedColor()      - get or set the unselected bubble color, which by default passes the datum to dc.ColorMixin's getColor function to dynamically color bubbles (defaults to gray unless .colors(), .colorDomain() and .colorAccessor() are defined)
+  .popup()                - function(d, marker) to return the string or DOM content of a popup
+  .renderPopup()          - get or set if popups should be shown on mouseover; Default: true
+  .layerGroup()           - get the layerGroup for the bubbles
   .marker()               - get or set function(d, map) to build the marker object. Probably not helpful to override this, but its's possible. Default: create L.circleMarker based on the other parameters; see source for details.
 ```

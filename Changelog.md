@@ -1,3 +1,12 @@
+## 0.5.2
+Improvements by Mori Heisoku ([#40](https://github.com/dc-js/dc.leaflet.js/pull/40))
+ * leafletBase now supports reuse of an existing leaflet map object using the .map() function
+ * new legend function legendTitle() added to optionally specify a title that appears above the legend contents if set
+ * bubbleChart changed to inherit from ColorMixin so .colors(), .colorDomain() and .colorAccessor() can be used to change bubble colors and a legend can be added to the map to show color ranges
+ * markerChart changed to allow you to define whether titles should be shown or not - function showRenderTitle() replaces prior default of rendering title at all times
+ * new markerChart functions fitOnRender() and fitOnRedraw() added to allow map to fit to bounds on initial render and/or crossfilter redraw respectively
+ * `legend.setContent` allows setting the content
+
 ## 0.5.1
  * `popupMod` and `filterMod` optionally restrict popup and filter actions to when a modifier key is pressed
 
