@@ -1,3 +1,6 @@
+## 0.5.3
+* adds `browser` attribute for Observable and other module compatibility
+
 ## 0.5.2
 Improvements by Mori Heisoku ([#40](https://github.com/dc-js/dc.leaflet.js/pull/40))
  * leafletBase now supports reuse of an existing leaflet map object using the .map() function
