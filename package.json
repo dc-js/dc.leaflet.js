@@ -12,6 +12,7 @@
         "crossfilter",
         "d3"
     ],
+    "browser": "dc.leaflet.js",
     "homepage": "http://dc-js.github.io/dc.leaflet.js/",
     "bugs": "https://github.com/dc-js/dc.leaflet.js/issues",
     "author": {
