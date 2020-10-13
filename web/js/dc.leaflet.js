@@ -1,5 +1,5 @@
 /*!
- *  dc.leaflet 0.5.5
+ *  dc.leaflet 0.5.6
  *  http://dc-js.github.io/dc.leaflet.js/
  *  Copyright 2014-2015 Boyan Yurukov and the dc.leaflet Developers
  *  https://github.com/dc-js/dc.leaflet.js/blob/master/AUTHORS
@@ -20,7 +20,7 @@
 'use strict';
 
 var dc_leaflet = {
-    version: '0.5.5'
+    version: '0.5.6'
 };
 
 dc_leaflet.leafletBase = function(Base) {
@@ -1017,7 +1017,8 @@ return dc_leaflet;
         var lmc = require('leaflet.markercluster');
         module.exports = _dc_leaflet(_dc, _d3, L);
     } else {
-        this.dc_leaflet = _dc_leaflet(dc, d3, this.L);
+        const that = typeof self !== undefined ? self : this;
+        that.dc_leaflet = _dc_leaflet(that.dc, that.d3, that.L);
     }
 }
 )();
