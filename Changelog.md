@@ -1,5 +1,9 @@
+## 0.5.5
+* use `unpkg` instead of `browser`; seems to be what Observable wants
+
 ## 0.5.4
 * make dependency on d3 explicit; dependency on crossfilter is just a devDependency
+* use @wesselkuipers/leaflet.markercluster fork of leaflet.markercluster for module compatibility
 
 ## 0.5.3
 * adds `browser` attribute for Observable and other module compatibility
