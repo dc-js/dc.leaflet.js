@@ -79,8 +79,8 @@ module.exports = function (grunt) {
                         src: [
 			    'leaflet-legend.css',
                             'node_modules/leaflet/dist/leaflet.css',
-                            'node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css',
-                            'node_modules/leaflet.markercluster/dist/MarkerCluster.css',
+                            'node_modules/@wesselkuipers/leaflet.markercluster/dist/MarkerCluster.Default.css',
+                            'node_modules/@wesselkuipers/leaflet.markercluster/dist/MarkerCluster.css',
                             'node_modules/dc/dist/style/dc.css'
                         ],
                         dest: '<%= conf.web %>/css/'
@@ -98,7 +98,7 @@ module.exports = function (grunt) {
                             'node_modules/dc/dist/dc.js',
                             'node_modules/leaflet/dist/leaflet.js',
                             'node_modules/leaflet/dist/leaflet-src.js',
-                            'node_modules/leaflet.markercluster/dist/leaflet.markercluster.js',
+                            'node_modules/@wesselkuipers/leaflet.markercluster/dist/leaflet.markercluster.js',
                             'node_modules/crossfilter2/crossfilter.js'
                         ],
                         dest: '<%= conf.web %>/js/'

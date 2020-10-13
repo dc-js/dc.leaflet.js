@@ -1,3 +1,6 @@
+## 0.5.4
+* make dependency on d3 explicit; dependency on crossfilter is just a devDependency
+
 ## 0.5.3
 * adds `browser` attribute for Observable and other module compatibility
 
