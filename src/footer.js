@@ -13,7 +13,7 @@ return dc_leaflet;
         module.exports = _dc_leaflet(_dc, _d3, L);
     } else {
         const that = typeof self !== undefined ? self : this;
-        that.dc_leaflet = _dc_leaflet(that.dc, that.d3, that.leaflet);
+        that.dc_leaflet = _dc_leaflet(that.dc, that.d3, that.L);
     }
 }
 )();
