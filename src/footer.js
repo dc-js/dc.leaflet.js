@@ -12,7 +12,8 @@ return dc_leaflet;
         var lmc = require('leaflet.markercluster');
         module.exports = _dc_leaflet(_dc, _d3, L);
     } else {
-        this.dc_leaflet = _dc_leaflet(dc, d3, this.L);
+        const that = typeof self !== undefined ? self : this;
+        that.dc_leaflet = _dc_leaflet(that.dc, that.d3, that.leaflet);
     }
 }
 )();

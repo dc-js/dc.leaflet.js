@@ -1,3 +1,6 @@
+## 0.5.6
+* use `this` for all dependencies in 
+
 ## 0.5.5
 * use `unpkg` instead of `browser`; seems to be what Observable wants
 
