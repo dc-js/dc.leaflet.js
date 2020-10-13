@@ -1,5 +1,5 @@
 /*!
- *  dc.leaflet 0.5.4
+ *  dc.leaflet 0.5.5
  *  http://dc-js.github.io/dc.leaflet.js/
  *  Copyright 2014-2015 Boyan Yurukov and the dc.leaflet Developers
  *  https://github.com/dc-js/dc.leaflet.js/blob/master/AUTHORS
@@ -20,7 +20,7 @@
 'use strict';
 
 var dc_leaflet = {
-    version: '0.5.4'
+    version: '0.5.5'
 };
 
 dc_leaflet.leafletBase = function(Base) {
